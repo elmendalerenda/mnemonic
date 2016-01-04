@@ -112,6 +112,14 @@ gulp.task('serve:dist', () => {
   });
 });
 
+var jasmineBrowser = require('gulp-jasmine-browser');
+
+gulp.task('jasmine-phantom', function() {
+  return gulp.src(['test/spec/**/*.js', 'spec/**/*_spec.js'])
+              .pipe(jasmineBrowser.specRunner({console: true}))
+              .pipe(jasmineBrowser.headless());
+});
+
 gulp.task('serve:test', () => {
   browserSync({
     notify: false,
