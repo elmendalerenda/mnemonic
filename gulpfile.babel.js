@@ -115,7 +115,7 @@ gulp.task('serve:dist', () => {
 var jasmineBrowser = require('gulp-jasmine-browser');
 
 gulp.task('jasmine-phantom', function() {
-  return gulp.src(['test/spec/**/*.js', 'spec/**/*_spec.js'])
+  return gulp.src(['bower_components/mocha/mocha.js', 'bower_components/chai/chai.js', 'test/spec/**/*.js'])
               .pipe(jasmineBrowser.specRunner({console: true}))
               .pipe(jasmineBrowser.headless());
 });
