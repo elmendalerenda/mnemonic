@@ -7,10 +7,17 @@
 
   describe('Given a stream with words', function () {
     it('discard words without exactly 2 consonants', function () {
-      var sourceList = "*a\\gape#\n*a\\gata#\n*a\\gil#\n*a\\gilmente#\n*a\\gora#\n*a\\guila#\n*a\\l#";
+      var sourceList = "*dejo#\n*delga#\n*delia#"
 
       var matchList = new MatchList(sourceList);
-      expect(matchList.all()).to.have.members(["*a\\gape#","*a\\gata#","*a\\gil#","*a\\gora#","*a\\guila#"]);
+      expect(matchList.all()).to.have.members(["*dejo#" ,"*delia#"]);
+    });
+
+    it('discard words that starts with vowel', function () {
+      var sourceList = "*a\\gora#\n*a\\guila#\n*a\\l#\n*dejo#\n*delga#\n*delia#"
+
+      var matchList = new MatchList(sourceList);
+      expect(matchList.all()).to.have.members(["*dejo#" ,"*delia#"]);
     });
   });
 })();
