@@ -6,7 +6,7 @@ var MatchList = (function (sourceList) {
   };
 
   function countWordConsonants (word) {
-   return word.replace(/[a|e|i|o|u|*|#|\\]+/g, '').length;
+   return reduceToConsonants(word).length;
   };
 
   function startsWithConsonant(word) {
@@ -17,11 +17,25 @@ var MatchList = (function (sourceList) {
     return countWordConsonants(word) == allowedConsonants;
   };
 
+  function reduceToConsonants(word) {
+    return word.replace(/[a|e|i|o|u|*|#|\\]+/g, '');
+  };
+
   return {
     all: function () {
       return sourceArray().filter(function(word) {
         return permittedConsonants(word) && startsWithConsonant(word);
       });
+    },
+
+    match: function(pattern) {
+      var filtered = this.all().filter(function(word) {
+        return reduceToConsonants(word) == pattern;
+      });
+      var result = null;
+      if(filtered.length > 0) { result = filtered[0]; }
+
+      return result;
     }
   }
 });
