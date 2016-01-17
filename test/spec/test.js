@@ -29,4 +29,13 @@
       expect(matchList.match('ff')).to.be.null;
     });
   });
+
+  describe('Given a two-digits number', function() {
+    it('returns a pair of consonants', function() {
+
+      var result = new ConsonantsTable().get('32')
+
+      expect(result).to.be.equal('mn');
+    });
+  });
 })();
