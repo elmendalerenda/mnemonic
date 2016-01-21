@@ -32,10 +32,17 @@
 
   describe('Given a two-digits number', function() {
     it('returns a pair of consonants', function() {
-
-      var result = new ConsonantsTable().get('32')
+      var result = new ConsonantsTable().get('32');
 
       expect(result).to.be.equal('mn');
+    });
+
+    it('returns a word that matches 2 consonants', function() {
+      var sourceList = new MatchList("*mano#\n*gato#");
+      var table = new ConsonantsTable();
+
+      expect(new Mnemonic(sourceList, table).convert('32')).to.be.equal('*mano#');
+      expect(new Mnemonic(sourceList, table).convert('81')).to.be.equal('*gato#');
     });
   });
 })();
