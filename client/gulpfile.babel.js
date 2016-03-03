@@ -23,7 +23,7 @@ function lint(files, options) {
       .pipe(reload({stream: true, once: true}))
       .pipe($.eslint(options))
       .pipe($.eslint.format())
-      .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
+//      .pipe($.if(!browserSync.active, $.eslint.failAfterError()));
   };
 }
 const testLintOptions = {
@@ -149,7 +149,7 @@ gulp.task('wiredep', () => {
 });
 
 gulp.task('build', ['lint', 'html', 'images', 'fonts', 'extras'], () => {
-  return gulp.src('dist/**/*').pipe($.size({title: 'build', gzip: true}));
+  return gulp.src('dist/**/*').pipe(gulp.dest('../server/public')).pipe($.size({title: 'build', gzip: true}))
 });
 
 gulp.task('default', ['clean'], () => {
