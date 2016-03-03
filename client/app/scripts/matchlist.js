@@ -1,25 +1,26 @@
-var MatchList = (function (sourceList) {
+'use strict';
+var MatchList = function (sourceList) {
   var allowedConsonants = 2;
 
   function sourceArray () {
     return sourceList.split('\n');
-  };
-
-  function countWordConsonants (word) {
-   return reduceToConsonants(word).length;
-  };
-
-  function startsWithConsonant(word) {
-    return word.match(/^\*[^aeiou].*/);
-  };
-
-  function permittedConsonants(word) {
-    return countWordConsonants(word) == allowedConsonants;
-  };
+  }
 
   function reduceToConsonants(word) {
     return word.replace(/[a|e|i|o|u|*|#|\\]+/g, '');
-  };
+  }
+
+  function countWordConsonants (word) {
+   return reduceToConsonants(word).length;
+  }
+
+  function startsWithConsonant(word) {
+    return word.match(/^\*[^aeiou].*/);
+  }
+
+  function permittedConsonants(word) {
+    return countWordConsonants(word) === allowedConsonants;
+  }
 
   return {
     all: function () {
@@ -30,12 +31,12 @@ var MatchList = (function (sourceList) {
 
     match: function(pattern) {
       var filtered = this.all().filter(function(word) {
-        return reduceToConsonants(word) == pattern;
+        return reduceToConsonants(word) === pattern;
       });
       var result = null;
       if(filtered.length > 0) { result = filtered[0]; }
 
       return result;
     }
-  }
-});
+  };
+};
