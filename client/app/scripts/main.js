@@ -2,7 +2,7 @@
   'use strict';
 
   function loadImage() {
-    $.get('/images?q=' + this.value, function(data){
+    $.get('/search?q=' + this.value, function(data){
       var imageUrl = data.images[0];
       $('#main-image').attr('src', imageUrl);
     });

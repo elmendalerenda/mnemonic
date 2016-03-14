@@ -23,7 +23,8 @@
     "main-bower-files": "^2.5.0",
     "wiredep": "^2.2.2",
     "gulp-jasmine-browser": "^0.2.3",
-    "phantomjs": "^1.9.19"
+    "phantomjs": "^1.9.19",
+    "proxy-middleware": "^0.15.0"
   },
   "eslintConfig": {
     "env": {

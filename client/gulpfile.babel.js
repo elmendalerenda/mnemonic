@@ -79,15 +79,21 @@ gulp.task('extras', () => {
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
 gulp.task('serve', ['styles', 'fonts'], () => {
+  var url = require('url');
+  var proxy = require('proxy-middleware');
+  var proxyOptions = url.parse('http://localhost:3000/search');
+  proxyOptions.route = '/search';
+
   browserSync({
     notify: false,
-    port: 3000,
+    port: 9000,
     server: {
       baseDir: ['.tmp', 'app'],
       routes: {
         '/bower_components': 'bower_components'
       }
-    }
+    },
+    middleware: [ proxy(proxyOptions) ]
   });
 
   gulp.watch([

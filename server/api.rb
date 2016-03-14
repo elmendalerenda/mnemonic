@@ -7,8 +7,25 @@ class API < Grape::API
   params do
     requires :q, type: String
   end
-  get :images do
-    { images: Image.retrieve(params[:q]) }
+
+  get :search do
+    { images: ImageServiceFactory.get_service.retrieve(params[:q]) }
+  end
+end
+
+class ImageServiceFactory
+  def self.get_service
+    imageService = Image
+    imageService = TestImage if(ENV['bing_key'].nil?)
+
+    return imageService
+  end
+end
+
+class TestImage
+  def self.retrieve(_, _=nil)
+    image = ['test_1.jpg', 'test_2.jpg'].shuffle.first
+    ["images/#{image}"]
   end
 end
 
