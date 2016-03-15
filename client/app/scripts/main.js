@@ -1,4 +1,4 @@
-(function ($) {
+var PageEvents = function($) {
   'use strict';
 
   function loadImage() {
@@ -8,5 +8,9 @@
     });
   }
 
-  $('#numbers-input').on('blur', loadImage);
-})(jQuery);
+$('#numbers-input').on('blur', loadImage);
+};
+
+(function(pageEvents, jQuery) {
+  pageEvents(jQuery);
+})(PageEvents, jQuery);

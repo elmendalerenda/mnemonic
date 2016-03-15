@@ -45,4 +45,18 @@
       expect(new Mnemonic(sourceList, table).convert('81')).to.be.equal('*gato#');
     });
   });
+
+  describe('on input', function() {
+    it('search an image', function() {
+      $("<div id='numbers-input'></div>").appendTo('body')
+
+      spyOn(jQuery, 'get');
+
+      PageEvents(jQuery);
+
+      $('#numbers-input').trigger("blur");
+
+      expect(jQuery.get.calls.count()).to.be.equal(1)
+    });
+  });
 })();
