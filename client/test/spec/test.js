@@ -46,18 +46,28 @@
     });
   });
 
-  xdescribe('on input', function() {
+  describe('on input', function() {
+    var server;
+    before(function() {
+      server = sinon.fakeServer.create();
+      server.respondImmediately = true;
+    });
+    after(function() {
+      server.restore();
+    });
+
+
     it('search an image', function() {
-      // $("<input id='numbers-input' value='any criteria'></input>").appendTo('body')
+      $("<input id='numbers-input' value='anycriteria'></input>").appendTo($('#test-container'))
+      $("<img id='main-image'></img>").appendTo($('#test-container'))
+      PageEvents(jQuery);
+      server.respondWith("GET", "/search?q=anycriteria",
+        [200, { "Content-Type": "application/json" },
+        '{ "images": ["wadus.jpg"] }']);
 
-      // spyOn(jQuery, 'get');
+      $('#numbers-input').trigger("blur");
 
-      // PageEvents(jQuery);
-
-      // $('#numbers-input').trigger("blur");
-
-      // expect(jQuery.get.calls.count()).to.be.equal(1)
-      // expect(jQuery.get.calls.mostRecent().args[0]).to.be.equal('/search?q=any criteria')
+      expect($('#main-image').attr('src')).to.be.equal('wadus.jpg');
     });
   });
 })();

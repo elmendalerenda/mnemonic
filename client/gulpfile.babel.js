@@ -120,7 +120,7 @@ gulp.task('serve:dist', () => {
 
 var mochaPhantomJS = require('gulp-mocha-phantomjs');
 gulp.task('test', function() {
-return gulp.src('test/index.html').pipe(mochaPhantomJS());
+  return gulp.src('test/index.html').pipe(mochaPhantomJS());
 });
 
 gulp.task('serve:test', () => {
@@ -130,10 +130,10 @@ gulp.task('serve:test', () => {
     ui: false,
     server: {
       baseDir: 'test',
-      routes: {
-        '/scripts': 'app/scripts',
-        '/bower_components': 'bower_components'
-      }
+       routes: {
+         '/app/scripts': 'app/scripts',
+         '/bower_components': 'bower_components'
+       }
     }
   });
 

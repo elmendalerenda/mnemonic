@@ -1,14 +1,16 @@
 var PageEvents = function($) {
   'use strict';
 
-  function loadImage() {
-    $.get('/search?q=' + this.value, function(data){
-      var imageUrl = data.images[0];
-      $('#main-image').attr('src', imageUrl);
-    });
+  function success(data) {
+     var imageUrl = data.images[0];
+     $('#main-image').attr('src', imageUrl);
   }
 
-$('#numbers-input').on('blur', loadImage);
+  function search() {
+    $.get('/search?q=' + this.value, success);
+  }
+
+  $('#numbers-input').on('blur', search);
 };
 
 (function(pageEvents, jQuery) {
