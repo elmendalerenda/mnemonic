@@ -118,12 +118,9 @@ gulp.task('serve:dist', () => {
   });
 });
 
-var jasmineBrowser = require('gulp-jasmine-browser');
-
+var mochaPhantomJS = require('gulp-mocha-phantomjs');
 gulp.task('test', function() {
-  return gulp.src(['app/scripts/**/*.js', 'bower_components/mocha/mocha.js', 'bower_components/chai/chai.js', 'bower_components/jquery/dist/jquery.min.js', 'test/spec/**/*.js'])
-              .pipe(jasmineBrowser.specRunner({console: true}))
-              .pipe(jasmineBrowser.headless());
+return gulp.src('test/index.html').pipe(mochaPhantomJS());
 });
 
 gulp.task('serve:test', () => {
