@@ -51,8 +51,11 @@
     before(function() {
       server = sinon.fakeServer.create();
       server.respondImmediately = true;
-      $("<input id='numbers-input'></input>").appendTo($('#test-container'))
+      $("<input id='numbers-input'></input>").appendTo($('#test-container'));
+
+      window.mnemonicEngine = MnemonicEngine("*man#\n*gato#");
     });
+
     after(function() {
       server.restore();
     });
