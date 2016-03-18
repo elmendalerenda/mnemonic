@@ -3,11 +3,11 @@ var MatchList = function (sourceList) {
   var allowedConsonants = 2;
 
   function sourceArray () {
-    return sourceList.split('\n');
+    return sourceList.replace(/[*|#]/g, '').split('\n');
   }
 
   function reduceToConsonants(word) {
-    return word.replace(/[a|e|i|o|u|*|#|\\]+/g, '');
+    return word.replace(/[a|e|i|o|u|\\]+/g, '');
   }
 
   function countWordConsonants (word) {
@@ -15,7 +15,7 @@ var MatchList = function (sourceList) {
   }
 
   function startsWithConsonant(word) {
-    return word.match(/^\*[^aeiou].*/);
+    return word.match(/^[^aeiou].*/);
   }
 
   function permittedConsonants(word) {
