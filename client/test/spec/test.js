@@ -11,7 +11,7 @@
 
       var matchList = new MatchList(sourceList);
       expect(matchList.all()).to.have.members(["dejo" ,"delia"]);
-    });
+});
 
     it('discard words that starts with vowel', function () {
       var sourceList = "*a\\gora#\n*a\\guila#\n*a\\l#\n*dejo#\n*delga#\n*delia#"
@@ -38,11 +38,10 @@
     });
 
     it('returns a word that matches 2 consonants', function() {
-      var sourceList = new MatchList("*mano#\n*gato#");
-      var table = new ConsonantsTable();
+      var mnemonic = new Mnemonic("*mano#\n*gato#");
 
-      expect(new Mnemonic(sourceList, table).convert('32')).to.be.equal('mano');
-      expect(new Mnemonic(sourceList, table).convert('81')).to.be.equal('gato');
+      expect(mnemonic.convert('32')).to.be.equal('mano');
+      expect(mnemonic.convert('81')).to.be.equal('gato');
     });
   });
 
@@ -53,7 +52,7 @@
       server.respondImmediately = true;
       $("<input id='numbers-input'></input>").appendTo($('#test-container'));
 
-      window.mnemonicEngine = MnemonicEngine("*man#\n*gato#");
+      window.mnemonic = new Mnemonic("*man#\n*gato#");
     });
 
     after(function() {

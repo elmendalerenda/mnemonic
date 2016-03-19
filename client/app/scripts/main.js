@@ -6,37 +6,14 @@ var PageEvents = function($) {
   }
 
   function search() {
-    var criteria = window.mnemonicEngine.convert(this.value);
+    var criteria = window.mnemonic.convert(this.value);
     $.get('/search?q=' + criteria, success);
   }
 
   $('#numbers-input').on('blur', search);
 };
 
-var MnemonicEngine = function(customWordList) {
-  var consonantsTable = new ConsonantsTable();
-  var engine;
-
-  function build(wordList){
-    var words = new MatchList(wordList);
-    engine = new Mnemonic(words, consonantsTable);
-  }
-
-  if(customWordList){
-    build(customWordList);
-  }
-  else {
-    $.get('/app/scripts/spanish.lex', build);
-  }
-
-  return {
-    convert: function(value) {
-      return engine.convert(value);
-    }
-  };
-};
-
-(function(pageEvents, MnemonicEngine, jQuery) {
-  window.mnemonicEngine = MnemonicEngine();
+(function(pageEvents, jQuery) {
+  window.mnemonic = new Mnemonic();
   pageEvents(jQuery);
-})(PageEvents, MnemonicEngine, jQuery);
+})(PageEvents, jQuery);
