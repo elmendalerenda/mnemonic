@@ -1,5 +1,5 @@
 {
-  "name": "sistemamayor",
+  "name": "newclient",
   "private": true,
   "dependencies": {
     "bootstrap": "~3.3.5",
@@ -16,11 +16,8 @@
     }
   },
   "devDependencies": {
-    "chai": "~3.4.2",
-    "mocha": "~2.3.4",
-    "sinon": "~1.17.3"
-  },
-  "resolutions": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
     "sinon": "~1.17.3"
   }
 }
