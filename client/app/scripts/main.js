@@ -1,14 +1,42 @@
 'use strict';
 var PageEvents = function($) {
-  function success(data) {
+  function renderImages(data) {
+//TOTEST
     var imageUrl = data.images[0];
-    $('#main-image').attr('src', imageUrl);
+    var all_rows = qsa('.images-row');
+    var last_image_row = all_rows[all_rows.length - 1];
+
+    if(last_image_row.childElementCount == 3) {
+      var container = qs('.container');
+      var inputrow = qs('#input-row');
+      last_image_row = document.createElement('div');
+      last_image_row.className = 'row images-row';
+      container.insertBefore(last_image_row, inputrow);
+    }
+
+    var new_row = document.createElement('div');
+    new_row.className = 'col-md-4';
+
+    var new_image = document.createElement('img');
+    new_image.className = 'img-responsive';
+    new_image.src = imageUrl;
+
+    new_row.appendChild(new_image);
+    last_image_row.appendChild(new_row);
   }
 
   function search() {
     var criteria = window.mnemonic.convert(this.value);
-    $.get('/search?q=' + criteria, success);
+    $.get('/search?q=' + criteria, renderImages);
   }
+
+  function qs(selector, scope) {
+    return (scope || document).querySelector(selector);
+  };
+
+  function qsa(selector, scope) {
+        return (scope || document).querySelectorAll(selector);
+  };
 
   $('#numbers-input').on('blur', search);
 };

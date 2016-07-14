@@ -61,7 +61,7 @@
 
     it('search an image', function() {
       $('#numbers-input').val('32');
-      $("<img id='main-image'></img>").appendTo($('#test-container'))
+      $("<div class='images-row'></div>").appendTo($('#test-container'))
       PageEvents(jQuery);
       server.respondWith("GET", "/search?q=man",
         [200, { "Content-Type": "application/json" },
@@ -69,7 +69,7 @@
 
       $('#numbers-input').trigger("blur");
 
-      expect($('#main-image').attr('src')).to.be.equal('wadus.jpg');
+      expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
     });
 
     it('converts a number to a word used as criteria', function() {
