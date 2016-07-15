@@ -15,13 +15,17 @@ var PageEvents = function($) {
     }
 
     var new_row = document.createElement('div');
-    new_row.className = 'col-md-4';
+    new_row.className = 'col-md-4 col-xs-4';
+
+    var new_thumb = document.createElement('a');
+    new_thumb.className = 'thumbnail';
 
     var new_image = document.createElement('img');
     new_image.className = 'img-responsive';
     new_image.src = imageUrl;
 
-    new_row.appendChild(new_image);
+    new_row.appendChild(new_thumb);
+    new_thumb.appendChild(new_image);
     last_image_row.appendChild(new_row);
   }
 
