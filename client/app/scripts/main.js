@@ -26,19 +26,13 @@ var PageEvents = function($) {
   }
 
   function search() {
+    if (!this.value) return;
+
     var criteria = window.mnemonic.convert(this.value);
     $.get('/search?q=' + criteria, renderImages);
   }
 
-  function qs(selector, scope) {
-    return (scope || document).querySelector(selector);
-  };
-
-  function qsa(selector, scope) {
-        return (scope || document).querySelectorAll(selector);
-  };
-
-  $('#numbers-input').on('blur', search);
+  $on(qs('#numbers-input'), 'blur', search);
 };
 
 (function(pageEvents, jQuery) {

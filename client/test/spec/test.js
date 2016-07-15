@@ -60,25 +60,34 @@
     });
 
     it('search an image', function() {
-      $('#numbers-input').val('32');
       $("<div class='images-row'></div>").appendTo($('#test-container'))
       PageEvents(jQuery);
       server.respondWith("GET", "/search?q=man",
         [200, { "Content-Type": "application/json" },
         '{ "images": ["wadus.jpg"] }']);
 
+      $('#numbers-input').val('32');
       $('#numbers-input').trigger("blur");
 
       expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
     });
 
-    it('converts a number to a word used as criteria', function() {
-      $('#numbers-input').val('32');
+    it('does not seach on empty input', function() {
+      PageEvents(jQuery);
+      var requestsBeforeInput = server.requests.length;
 
+      $('#numbers-input').val(null);
+      $('#numbers-input').trigger("blur");
+
+      expect(server.requests.length).to.be.equal(requestsBeforeInput);
+    });
+
+    it('converts a number to a word used as criteria', function() {
       var xhr = sinon.useFakeXMLHttpRequest();
       var requests = [];
       xhr.onCreate = function (req) { requests.push(req); };
 
+      $('#numbers-input').val('32');
       $('#numbers-input').trigger("blur");
 
       expect(requests[0].url).to.be.equal('/search?q=man');
