@@ -7,8 +7,8 @@ var PageEvents = function($) {
     var last_image_row = all_rows[all_rows.length - 1];
 
     if(last_image_row.childElementCount == 3) {
-      var container = qs('.container');
-      var inputrow = qs('#input-row');
+      var container = qs('#image-grid');
+      var inputrow = qs('#input-row', container);
       last_image_row = document.createElement('div');
       last_image_row.className = 'row images-row';
       container.insertBefore(last_image_row, inputrow);
@@ -37,6 +37,7 @@ var PageEvents = function($) {
   }
 
   $on(qs('#numbers-input'), 'blur', search);
+  $on(qs('#search-button'), 'click', search);
 };
 
 (function(pageEvents, jQuery) {

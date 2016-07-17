@@ -47,10 +47,17 @@
 
   describe('on input', function() {
     var server;
+    var dispatch = function(el, eventName) { el.dispatchEvent(new Event(eventName)); }
+
+    beforeEach(function() {
+      $('#test-container').html('');
+
+//PageEvents(jQuery);
+    });
+
     before(function() {
       server = sinon.fakeServer.create();
       server.respondImmediately = true;
-      $("<input id='numbers-input'></input>").appendTo($('#test-container'));
 
       window.mnemonic = new Mnemonic("*man#\n*gato#");
     });
@@ -59,25 +66,42 @@
       server.restore();
     });
 
-    it('search an image', function() {
-      $("<div class='images-row'></div>").appendTo($('#test-container'))
+    it('search an image on input blur', function() {
+      $("<div id='numbers-input'></div>").appendTo($('#test-container'));
+      $("<div class='images-row'></div>").appendTo($('#test-container'));
       PageEvents(jQuery);
+
       server.respondWith("GET", "/search?q=man",
         [200, { "Content-Type": "application/json" },
         '{ "images": ["wadus.jpg"] }']);
 
+      qs('#numbers-input').value = '32';
+      dispatch(qs('#numbers-input'), 'blur');
+
+      expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
+    });
+
+    it('search an image on button click', function() {
+      $("<div id='numbers-input'></div>").appendTo($('#test-container'));
+      $("<div id='search-button'></div>").appendTo($('#test-container'));
+      $("<div class='images-row'></div>").appendTo($('#test-container'));
+
+      server.respondWith("GET", "/search?q=man",
+        [200, { "Content-Type": "application/json" },
+        '{ "images": ["wadus.jpg"] }']);
+      PageEvents(jQuery);
+
       $('#numbers-input').val('32');
-      $('#numbers-input').trigger("blur");
+      dispatch(qs('#search-button'), 'click');
 
       expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
     });
 
     it('does not seach on empty input', function() {
-      PageEvents(jQuery);
       var requestsBeforeInput = server.requests.length;
 
       $('#numbers-input').val(null);
-      $('#numbers-input').trigger("blur");
+      dispatch(qs('#numbers-input'), 'blur');
 
       expect(server.requests.length).to.be.equal(requestsBeforeInput);
     });
@@ -88,7 +112,7 @@
       xhr.onCreate = function (req) { requests.push(req); };
 
       $('#numbers-input').val('32');
-      $('#numbers-input').trigger("blur");
+      dispatch(qs('#numbers-input'), 'blur');
 
       expect(requests[0].url).to.be.equal('/search?q=man');
       xhr.restore();

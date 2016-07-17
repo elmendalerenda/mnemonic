@@ -1,7 +1,6 @@
 (function (window) {
   'use strict';
 
-  // Get element(s) by CSS selector:
   window.qs = function (selector, scope) {
     return (scope || document).querySelector(selector);
   };
@@ -9,8 +8,9 @@
     return (scope || document).querySelectorAll(selector);
   };
 
-  // addEventListener wrapper:
   window.$on = function (target, type, callback, useCapture) {
+    if(!target) { console.log('failed to add listener to element, target not found'); return; }
+
     target.addEventListener(type, callback, !!useCapture);
   };
 })(window);
