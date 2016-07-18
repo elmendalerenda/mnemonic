@@ -3,9 +3,17 @@
   "private": true,
   "dependencies": {
     "bootstrap": "~3.3.5",
-    "modernizr": "~2.8.1"
+    "modernizr": "~2.8.1",
+    "masonry": "^4.1.0",
+    "imagesloaded": "^4.1.0"
   },
   "overrides": {
+    "masonry": {
+      "main": [
+        "./dist/masonry.pkgd.js"
+      ],
+      "dependencies": {}
+    },
     "bootstrap": {
       "main": [
         "less/bootstrap.less",

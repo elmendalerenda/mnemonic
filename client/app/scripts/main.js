@@ -1,23 +1,16 @@
 'use strict';
 var PageEvents = function($) {
   function renderImages(data) {
-//TOTEST
+    //TOTEST
     var imageUrls = data.images;
     var grid = qs('#image-grid');
-    grid.innerHTML = '';
+
+    clearGrid();
 
     imageUrls.forEach(function(imageUrl) {
-      var all_rows = qsa('.images-row');
-      var last_image_row = all_rows[all_rows.length - 1];
-
-      if(!last_image_row || last_image_row.childElementCount == 3) {
-        last_image_row = document.createElement('div');
-        last_image_row.className = 'row images-row viewport-height';
-        grid.appendChild(last_image_row);
-      }
-
       var new_row = document.createElement('div');
-      new_row.className = 'col-md-4 col-xs-4';
+      new_row.style.display = 'none';
+      new_row.className = 'grid-item col-xs-4 col-md-4';
 
       var new_thumb = document.createElement('a');
       new_thumb.className = 'thumbnail';
@@ -28,7 +21,21 @@ var PageEvents = function($) {
 
       new_row.appendChild(new_thumb);
       new_thumb.appendChild(new_image);
-      last_image_row.appendChild(new_row);
+      grid.appendChild(new_row);
+    });
+
+    resetLayout();
+  }
+
+  function clearGrid() {
+    window.$grid.remove(qsa('.grid-item'));
+  }
+
+  function resetLayout() {
+    $('#image-grid').imagesLoaded( function() {
+      window.$grid.appended(qsa('.grid-item'));
+      $('.grid-item').show();
+      window.$grid.layout();
     });
   }
 
@@ -54,4 +61,13 @@ var PageEvents = function($) {
 (function(pageEvents, jQuery) {
   window.mnemonic = new Mnemonic();
   pageEvents(jQuery);
+
+  var initializeMasonry = function() {
+    window.$grid = new Masonry('#image-grid', {
+      itemSelector: '.grid-item'
+    });
+  }
+
+  initializeMasonry();
+
 })(PageEvents, jQuery);

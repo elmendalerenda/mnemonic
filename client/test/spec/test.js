@@ -50,7 +50,6 @@
     var trigger = function(el, eventName) { el.dispatchEvent(new Event(eventName)); }
     var setSearch = function(criteria) { $(inputBox()).val(criteria); }
     var container = function() { return $('#test-container'); }();
-    var addImageGrid = function() { $("<div id='image-grid'></div>").appendTo(container); }
     var inputBox = function() { return qs('#numbers-input'); };
     var attachPageEvents = function() { PageEvents(jQuery); };
 
@@ -58,6 +57,7 @@
     beforeEach(function() {
       container.html('');
       $("<div id='numbers-input'></div>").appendTo(container);
+      $("<div id='image-grid'></div>").appendTo(container);
     });
 
     before(function() {
@@ -72,7 +72,6 @@
     });
 
     it('search an image on input blur', function() {
-      addImageGrid();
       attachPageEvents();
 
       server.respondWith("GET", "/search?q=man",
@@ -87,7 +86,6 @@
 
     it('search an image on button click', function() {
       $("<div id='search-button'></div>").appendTo(container);
-      addImageGrid();
       attachPageEvents();
 
       server.respondWith("GET", "/search?q=man",
