@@ -47,11 +47,13 @@
 
   describe('on input', function() {
     var server;
-    var dispatch = function(el, eventName) { el.dispatchEvent(new Event(eventName)); }
-    var setSearch = function(criteria) { $('#numbers-input').val(criteria); }
+    var trigger = function(el, eventName) { el.dispatchEvent(new Event(eventName)); }
+    var setSearch = function(criteria) { $(inputBox()).val(criteria); }
     var container = function() { return $('#test-container'); }();
-    var addImageGrid = function() { $("<div class='images-row'></div>").appendTo(container); }
+    var addImageGrid = function() { $("<div id='image-grid'></div>").appendTo(container); }
+    var inputBox = function() { return qs('#numbers-input'); };
     var attachPageEvents = function() { PageEvents(jQuery); };
+
 
     beforeEach(function() {
       container.html('');
@@ -78,7 +80,7 @@
         '{ "images": ["wadus.jpg"] }']);
 
       setSearch('32');
-      dispatch(qs('#numbers-input'), 'blur');
+      trigger(inputBox(), 'blur');
 
       expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
     });
@@ -93,7 +95,7 @@
         '{ "images": ["wadus.jpg"] }']);
 
       setSearch('32');
-      dispatch(qs('#search-button'), 'click');
+      trigger(qs('#search-button'), 'click');
 
       expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
     });
@@ -103,7 +105,7 @@
       var requestsBeforeInput = server.requests.length;
 
       setSearch(null);
-      dispatch(qs('#numbers-input'), 'blur');
+      trigger(inputBox(), 'blur');
 
       expect(server.requests.length).to.be.equal(requestsBeforeInput);
     });
@@ -113,7 +115,7 @@
       attachPageEvents();
 
       setSearch('32');
-      dispatch(qs('#numbers-input'), 'blur');
+      trigger(inputBox(), 'blur');
 
       expect($('#result-word small').html()).to.be.equal('man');
     });
@@ -125,7 +127,7 @@
       xhr.onCreate = function (req) { requests.push(req); };
 
       setSearch('32');
-      dispatch(qs('#numbers-input'), 'blur');
+      trigger(inputBox(), 'blur');
 
       expect(requests[0].url).to.be.equal('/search?q=man');
       xhr.restore();
