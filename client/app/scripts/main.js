@@ -29,11 +29,18 @@ var PageEvents = function($) {
     last_image_row.appendChild(new_row);
   }
 
+  function displayResultWord(word) {
+    var label = qs('#result-word small');
+    if(!label) return;
+    label.innerHTML = word;
+  }
+
   function search() {
     var inputValue = qs('#numbers-input').value;
     if (!inputValue) return;
 
     var criteria = window.mnemonic.convert(inputValue);
+    displayResultWord(criteria);
     $.get('/search?q=' + criteria, renderImages);
   }
 

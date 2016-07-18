@@ -108,6 +108,16 @@
       expect(server.requests.length).to.be.equal(requestsBeforeInput);
     });
 
+    it('displays the resulting word', function() {
+      $("<div id='result-word'><small></small></div>").appendTo(container);
+      attachPageEvents();
+
+      setSearch('32');
+      dispatch(qs('#numbers-input'), 'blur');
+
+      expect($('#result-word small').html()).to.be.equal('man');
+    });
+
     it('converts a number to a word used as criteria', function() {
       attachPageEvents();
       var xhr = sinon.useFakeXMLHttpRequest();
