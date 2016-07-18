@@ -30,9 +30,10 @@ var PageEvents = function($) {
   }
 
   function search() {
-    if (!this.value) return;
+    var inputValue = qs('#numbers-input').value;
+    if (!inputValue) return;
 
-    var criteria = window.mnemonic.convert(this.value);
+    var criteria = window.mnemonic.convert(inputValue);
     $.get('/search?q=' + criteria, renderImages);
   }
 

@@ -48,11 +48,14 @@
   describe('on input', function() {
     var server;
     var dispatch = function(el, eventName) { el.dispatchEvent(new Event(eventName)); }
+    var setSearch = function(criteria) { $('#numbers-input').val(criteria); }
+    var container = function() { return $('#test-container'); }();
+    var addImageGrid = function() { $("<div class='images-row'></div>").appendTo(container); }
+    var attachPageEvents = function() { PageEvents(jQuery); };
 
     beforeEach(function() {
-      $('#test-container').html('');
-
-//PageEvents(jQuery);
+      container.html('');
+      $("<div id='numbers-input'></div>").appendTo(container);
     });
 
     before(function() {
@@ -67,51 +70,51 @@
     });
 
     it('search an image on input blur', function() {
-      $("<div id='numbers-input'></div>").appendTo($('#test-container'));
-      $("<div class='images-row'></div>").appendTo($('#test-container'));
-      PageEvents(jQuery);
+      addImageGrid();
+      attachPageEvents();
 
       server.respondWith("GET", "/search?q=man",
         [200, { "Content-Type": "application/json" },
         '{ "images": ["wadus.jpg"] }']);
 
-      qs('#numbers-input').value = '32';
+      setSearch('32');
       dispatch(qs('#numbers-input'), 'blur');
 
       expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
     });
 
     it('search an image on button click', function() {
-      $("<div id='numbers-input'></div>").appendTo($('#test-container'));
-      $("<div id='search-button'></div>").appendTo($('#test-container'));
-      $("<div class='images-row'></div>").appendTo($('#test-container'));
+      $("<div id='search-button'></div>").appendTo(container);
+      addImageGrid();
+      attachPageEvents();
 
       server.respondWith("GET", "/search?q=man",
         [200, { "Content-Type": "application/json" },
         '{ "images": ["wadus.jpg"] }']);
-      PageEvents(jQuery);
 
-      $('#numbers-input').val('32');
+      setSearch('32');
       dispatch(qs('#search-button'), 'click');
 
       expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
     });
 
     it('does not seach on empty input', function() {
+      attachPageEvents();
       var requestsBeforeInput = server.requests.length;
 
-      $('#numbers-input').val(null);
+      setSearch(null);
       dispatch(qs('#numbers-input'), 'blur');
 
       expect(server.requests.length).to.be.equal(requestsBeforeInput);
     });
 
     it('converts a number to a word used as criteria', function() {
+      attachPageEvents();
       var xhr = sinon.useFakeXMLHttpRequest();
       var requests = [];
       xhr.onCreate = function (req) { requests.push(req); };
 
-      $('#numbers-input').val('32');
+      setSearch('32');
       dispatch(qs('#numbers-input'), 'blur');
 
       expect(requests[0].url).to.be.equal('/search?q=man');
