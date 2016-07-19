@@ -1,42 +1,56 @@
 'use strict';
 var PageEvents = function($) {
+  var LoadingSpinner = function() {
+    var nullSpinner = function(){ return document.createElement('div'); }
+    var el = qs('#grid-spinner') || nullSpinner();
+
+    this.show = function() { el.style.display = 'block'; }
+    this.hide = function() { el.style.display = 'none'; }
+  }
+
   function renderImages(data) {
-    //TOTEST
     var imageUrls = data.images;
     var grid = qs('#image-grid');
 
-    clearGrid();
-
     imageUrls.forEach(function(imageUrl) {
-      var new_row = document.createElement('div');
-      new_row.style.display = 'none';
-      new_row.className = 'grid-item col-xs-4 col-md-4';
+      var item = document.createElement('div');
+      item.style.display = 'none';
+      item.className = 'grid-item col-xs-4 col-md-4';
 
-      var new_thumb = document.createElement('a');
-      new_thumb.className = 'thumbnail';
+      var thumb = document.createElement('a');
+      thumb.className = 'thumbnail';
 
-      var new_image = document.createElement('img');
-      new_image.className = 'img-responsive';
-      new_image.src = imageUrl;
+      var img = document.createElement('img');
+      img.className = 'img-responsive';
+      img.src = imageUrl;
 
-      new_row.appendChild(new_thumb);
-      new_thumb.appendChild(new_image);
-      grid.appendChild(new_row);
+      item.appendChild(thumb);
+      thumb.appendChild(img);
+      grid.appendChild(item);
     });
 
     resetLayout();
   }
 
   function clearGrid() {
-    window.$grid.remove(qsa('.grid-item'));
-    window.$grid.layout();
+    new LoadingSpinner().show();
+    window.grid.remove(qsa('.grid-item'));
+    window.grid.layout();
   }
 
   function resetLayout() {
-    $('#image-grid').imagesLoaded( function() {
-      window.$grid.appended(qsa('.grid-item'));
+    function onLoadedImages(el, fn){
+      var imagesLoadedPresent = !!$(el).imagesLoaded;
+
+      if(imagesLoadedPresent){ $(el).imagesLoaded(fn); }
+      else { fn(); }
+    }
+
+    onLoadedImages('#image-grid', function() {
+      window.grid.appended(qsa('.grid-item'));
       $('.grid-item').show();
-      window.$grid.layout();
+      window.grid.layout();
+      new LoadingSpinner().hide();
     });
   }
 
@@ -52,6 +66,7 @@ var PageEvents = function($) {
 
     var criteria = window.mnemonic.convert(inputValue);
     displayResultWord(criteria);
+    clearGrid();
     $.get('/search?q=' + criteria, renderImages);
   }
 
@@ -63,7 +78,7 @@ var PageEvents = function($) {
   window.mnemonic = new Mnemonic();
   pageEvents(jQuery);
 
-  window.$grid = new gridLayout('#image-grid', {
+  window.grid = new gridLayout('#image-grid', {
     itemSelector: '.grid-item'
   });
 

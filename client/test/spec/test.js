@@ -51,7 +51,16 @@
     var setSearch = function(criteria) { $(inputBox()).val(criteria); }
     var container = function() { return $('#test-container'); }();
     var inputBox = function() { return qs('#numbers-input'); };
+    var serverSuccess = function(image) {
+      server.respondWith("GET", "/search?q=man",
+        [200, { "Content-Type": "application/json" },
+        '{ "images": ["' + image + '"] }']);
+    };
     var attachPageEvents = function() { PageEvents(jQuery); };
+    var search = function(criteria) {
+      setSearch(criteria);
+      trigger(inputBox(), 'blur');
+    };
 
 
     beforeEach(function() {
@@ -73,29 +82,23 @@
 
     it('search an image on input blur', function() {
       attachPageEvents();
-
-      server.respondWith("GET", "/search?q=man",
-        [200, { "Content-Type": "application/json" },
-        '{ "images": ["wadus.jpg"] }']);
+      serverSuccess('wadus.jpg');
 
       setSearch('32');
       trigger(inputBox(), 'blur');
 
-      expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
+      expect($('img').attr('src')).to.be.equal('wadus.jpg');
     });
 
     it('search an image on button click', function() {
       $("<div id='search-button'></div>").appendTo(container);
       attachPageEvents();
-
-      server.respondWith("GET", "/search?q=man",
-        [200, { "Content-Type": "application/json" },
-        '{ "images": ["wadus.jpg"] }']);
+      serverSuccess('wadus.jpg');
 
       setSearch('32');
       trigger(qs('#search-button'), 'click');
 
-      expect($('.img-responsive').attr('src')).to.be.equal('wadus.jpg');
+      expect($('img').attr('src')).to.be.equal('wadus.jpg');
     });
 
     it('does not seach on empty input', function() {
@@ -112,10 +115,19 @@
       $("<div id='result-word'><small></small></div>").appendTo(container);
       attachPageEvents();
 
-      setSearch('32');
-      trigger(inputBox(), 'blur');
+      search('32');
 
       expect($('#result-word small').html()).to.be.equal('man');
+    });
+
+    it('displays the spinner when waiting for server response', function() {
+      $("<div id='grid-spinner'></div>").appendTo(container);
+      attachPageEvents();
+      server = sinon.fakeServer.create();
+
+      search('32');
+
+      expect($('#grid-spinner').attr('style')).to.be.equal('display: block;');
     });
 
     it('converts a number to a word used as criteria', function() {
@@ -124,8 +136,7 @@
       var requests = [];
       xhr.onCreate = function (req) { requests.push(req); };
 
-      setSearch('32');
-      trigger(inputBox(), 'blur');
+      search('32');
 
       expect(requests[0].url).to.be.equal('/search?q=man');
       xhr.restore();
