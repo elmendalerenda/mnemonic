@@ -60,13 +60,17 @@ var PageEvents = function($) {
     label.innerHTML = word;
   }
 
+  function prepareForResults(word){
+    displayResultWord(word);
+    clearGrid();
+  }
+
   function search() {
     var inputValue = qs('#numbers-input').value;
     if (!inputValue) return;
 
     var criteria = window.mnemonic.convert(inputValue);
-    displayResultWord(criteria);
-    clearGrid();
+    prepareForResults(criteria);
     $.get('/search?q=' + criteria, renderImages);
   }
 
