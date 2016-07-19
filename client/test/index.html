@@ -29,10 +29,15 @@
   <!-- bower:js -->
   <!-- endbower -->
 
-  <div id="test-container">
-    <!-- <div id='numbers-input'></div> -->
-    <!-- <div id='search-button'></div> -->
-  </div>
+  <script>
+    window.Masonry = function(){
+      return {
+        remove : function(){},
+        layout: function(){}
+      }
+    };
+  </script>
+  <div id="test-container"> </div>
 
   <!-- include source files here... -->
   <script src="../app/scripts/helpers.js"></script>

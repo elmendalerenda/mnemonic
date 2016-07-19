@@ -29,6 +29,7 @@ var PageEvents = function($) {
 
   function clearGrid() {
     window.$grid.remove(qsa('.grid-item'));
+    window.$grid.layout();
   }
 
   function resetLayout() {
@@ -58,16 +59,12 @@ var PageEvents = function($) {
   $on(qs('#search-button'), 'click', search);
 };
 
-(function(pageEvents, jQuery) {
+(function(pageEvents, jQuery, gridLayout) {
   window.mnemonic = new Mnemonic();
   pageEvents(jQuery);
 
-  var initializeMasonry = function() {
-    window.$grid = new Masonry('#image-grid', {
-      itemSelector: '.grid-item'
-    });
-  }
+  window.$grid = new gridLayout('#image-grid', {
+    itemSelector: '.grid-item'
+  });
 
-  initializeMasonry();
-
-})(PageEvents, jQuery);
+})(PageEvents, jQuery, Masonry);
