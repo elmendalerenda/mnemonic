@@ -22,6 +22,12 @@ var MatchList = function (sourceList) {
     return countWordConsonants(word) === allowedConsonants;
   }
 
+  function random(max, opts) {
+    opts = opts || {};
+    var randomGenerator = opts["randomGenerator"] || Math.random;
+    return Math.floor(randomGenerator() * max);
+  }
+
   return {
     all: function () {
       return sourceArray().filter(function(word) {
@@ -29,12 +35,15 @@ var MatchList = function (sourceList) {
       });
     },
 
-    match: function(pattern) {
+    match: function(pattern, options) {
       var filtered = this.all().filter(function(word) {
         return reduceToConsonants(word) === pattern;
       });
       var result = null;
-      if(filtered.length > 0) { result = filtered[0]; }
+
+      if(filtered.length > 0) {
+        result = filtered[random(filtered.length - 1, options)];
+      }
 
       return result;
     }

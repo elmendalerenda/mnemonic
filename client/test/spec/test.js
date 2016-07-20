@@ -11,7 +11,7 @@
 
       var matchList = new MatchList(sourceList);
       expect(matchList.all()).to.have.members(["dejo" ,"delia"]);
-});
+    });
 
     it('discard words that starts with vowel', function () {
       var sourceList = "*a\\gora#\n*a\\guila#\n*a\\l#\n*dejo#\n*delga#\n*delia#"
@@ -20,7 +20,7 @@
       expect(matchList.all()).to.have.members(["dejo" ,"delia"]);
     });
 
-    it('returns a word given a pair of consonants', function() {
+    it('returns the word matching a pair of consonants', function() {
       var sourceList = "*a\\gora#\n*a\\guila#\n*a\\l#\n*dejo#\n*delga#\n*delia#"
 
       var matchList = new MatchList(sourceList);
@@ -28,6 +28,16 @@
       expect(matchList.match('dl')).to.be.equal("delia");
       expect(matchList.match('ff')).to.be.null;
     });
+
+    it('returns an arbitrary word given a pair of consonants, given more than one match', function() {
+      var sourceList = "*dejo#\n*dije#\n"
+
+      var matchList = new MatchList(sourceList);
+      expect(matchList.match('dj',
+          { "randomGenerator": function(){ return 1;} })
+      ).to.be.equal("dije");
+    });
+
   });
 
   describe('Given a two-digits number', function() {
