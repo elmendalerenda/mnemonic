@@ -31,7 +31,7 @@ end
 
 class Image
   def self.retrieve(criteria, n=9)
-    bing_image = Bing.new(ENV['bing_key'], n, 'Image')
+    bing_image = Bing.new(ENV['bing_key'], n, 'Image', { Market: 'ES-es' })
     bing_results = bing_image.search(criteria)
     bing_results[0][:Image].map { |e| e[:MediaUrl] }
   end
