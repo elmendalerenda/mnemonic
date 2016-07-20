@@ -22,10 +22,32 @@ var MatchList = function (sourceList) {
     return countWordConsonants(word) === allowedConsonants;
   }
 
-  function random(max, opts) {
-    opts = opts || {};
-    var randomGenerator = opts["randomGenerator"] || Math.random;
-    return Math.floor(randomGenerator() * max);
+
+  function FilteredWords(list, opts) {
+    var random = function(max) {
+      var options  = opts || {};
+      var randomGenerator = options['randomGenerator'] || Math.random;
+      return Math.floor(randomGenerator() * max);
+    }
+
+    var addAccents = function(word) {
+      var accentTable = { 'a\\': 'á', 'e\\': 'é', 'i\\': 'í', 'o\\': 'ó', 'u\\': 'ú' };
+      var resultWord = word;
+
+      for (var el in accentTable) {
+        if(!accentTable.hasOwnProperty(el)) continue;
+        resultWord = resultWord.replace(el, accentTable[el]);
+      }
+
+      return resultWord;
+    }
+
+    this.fetch = function(){
+      if(list.length == 0) { return null; }
+
+      var result = list[random(list.length - 1)];
+      return addAccents(result);
+    }
   }
 
   return {
@@ -39,13 +61,8 @@ var MatchList = function (sourceList) {
       var filtered = this.all().filter(function(word) {
         return reduceToConsonants(word) === pattern;
       });
-      var result = null;
 
-      if(filtered.length > 0) {
-        result = filtered[random(filtered.length - 1, options)];
-      }
-
-      return result;
+      return new FilteredWords(filtered, options).fetch();
     }
   };
 };

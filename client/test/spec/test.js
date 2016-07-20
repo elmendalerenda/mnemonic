@@ -38,6 +38,13 @@
       ).to.be.equal("dije");
     });
 
+    it('returns words with accent', function() {
+      var sourceList = "*de\\jo#\n"
+
+      var matchList = new MatchList(sourceList);
+      expect(matchList.match('dj')).to.be.equal("déjo");
+    });
+
   });
 
   describe('Given a two-digits number', function() {
