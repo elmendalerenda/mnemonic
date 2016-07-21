@@ -76,6 +76,8 @@ var PageEvents = function($) {
 
   $on(qs('#numbers-input'), 'blur', search);
   $on(qs('#search-button'), 'click', search);
+
+  Recorder('#record-button', '#stop-button');
 };
 
 (function(pageEvents, jQuery, gridLayout) {
