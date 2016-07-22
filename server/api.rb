@@ -1,15 +1,15 @@
-require 'grape'
+require 'roda'
 require 'searchbing'
 
-class API < Grape::API
-  format :json
+class API < Roda
+  plugin :json
+  route do |r|
+    r.is "search" do
+      r.get do
+        { images: ImageServiceFactory.get_service.retrieve(r['q']) }
+      end
 
-  params do
-    requires :q, type: String
-  end
-
-  get :search do
-    { images: ImageServiceFactory.get_service.retrieve(params[:q]) }
+    end
   end
 end
 
