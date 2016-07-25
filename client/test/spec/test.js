@@ -159,4 +159,44 @@
       xhr.restore();
     });
   });
+
+  describe('Store images in favorite', function () {
+    var favorites;
+    var storage;
+
+    beforeEach(function(){
+      storage = {
+        'setItem': function(){},
+        'removeItem': function(){},
+        'getItem': function(){ return 'anyresult';}
+      };
+      favorites = new Favorites(storage);
+    });
+
+    it('saves a match and image', function() {
+      var spy = sinon.spy(storage, "setItem");
+
+      favorites.save('32', 'man', 'http://wadus.com');
+
+      expect(spy.withArgs('32', { "match": "man", "image": "http://wadus.com"}).calledOnce).to.be.true;
+    });
+
+    it('gets the information from number', function() {
+      var spy = sinon.spy(storage, 'getItem');
+      spy.returnValue = 'anyresult';
+
+      var result = favorites.lookup('32');
+
+      expect(spy.withArgs('32').calledOnce).to.be.true;
+      expect(result).to.be.equal('anyresult');
+    });
+
+    it('removes a number from the favorites', function() {
+      var spy = sinon.spy(storage, 'removeItem');
+
+      favorites.remove('32');
+
+      expect(spy.withArgs('32').calledOnce).to.be.true;
+    });
+  });
 })();
