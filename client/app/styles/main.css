@@ -1,4 +1,18 @@
 
+/* select image */
+.selected-wrapper {
+  position: relative;
+  color: #337ab7;
+  border-color: #337ab7;
+}
+
+.selected-wrapper .glyphicon {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  color: #337ab7;
+}
+
 
 /* loading animated spinner */
 .glyphicon-spin {
