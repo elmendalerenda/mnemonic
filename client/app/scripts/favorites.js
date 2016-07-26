@@ -20,10 +20,19 @@ var Favorites = function () {
     });
   }
 
-  [].slice.call(qsa('.thumbnail img')).forEach(function(th){
-    $on(th, 'click', function(ev){
-      clean();
-      highlightImg(ev.target);
+  function isFav(img) {
+    return img.parentNode.classList.contains(imgWrapperClass);
+  }
+
+  function attachClickToImages(){
+    [].slice.call(qsa('.thumbnail img')).forEach(function(th){
+      $on(th, 'click', function(ev){
+        var fav = !isFav(ev.target);
+        clean();
+        if(fav) { highlightImg(ev.target); }
+      });
     });
-  })
+  }
+
+  attachClickToImages();
 }

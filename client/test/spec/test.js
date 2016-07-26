@@ -206,6 +206,7 @@
   describe('Favorites', function(){
     var container = function() { return $('#test-container'); }();
     var trigger = function(el, eventName) { el.dispatchEvent(new Event(eventName)); }
+    var isFav = function(el) { return el.classList.contains('selected-wrapper'); }
     beforeEach(function() {
       container.html('');
     });
@@ -217,23 +218,34 @@
 
         trigger(qs('.thumbnail img'), 'click');
 
-        expect($('.thumbnail')[0].classList.contains('selected-wrapper')).to.be.true
-        expect($('.thumbnail span')[0].classList.contains('fav-icon')).to.be.true
-        expect($('.thumbnail span')[0].classList.contains('glyphicon')).to.be.true
-        expect($('.thumbnail span')[0].classList.contains('glyphicon-heart')).to.be.true
+        expect(isFav(qs('.thumbnail'))).to.be.true
+        var iconClasses = qs('.thumbnail span').classList;
+        expect(iconClasses.contains('fav-icon')).to.be.true
+        expect(iconClasses.contains('glyphicon')).to.be.true
+        expect(iconClasses.contains('glyphicon-heart')).to.be.true
       });
 
-      it('cleans the rest of images', function(){
+      it('cleans the previous selected fav', function(){
         $("<div class='thumbnail old selected-wrapper'><img/><span class='fav-icon'></span></div>").appendTo(container);
         $("<div class='thumbnail new'><img /></div>").appendTo(container);
         Favorites();
 
         trigger(qs('.thumbnail.new img'), 'click');
 
-        var oldFavorite = qs('.old');
-
-        expect(oldFavorite.classList.contains('selected-wrapper')).to.be.false
+        expect(isFav(qs('.old'))).to.be.false
         expect(qs('.old .fav-icon')).to.be.null
+      });
+    });
+
+    describe('deselect favorite', function(){
+      it('removes the highlight', function(){
+        $("<div class='thumbnail selected-wrapper'><img/><span class='fav-icon'></span></div>").appendTo(container);
+        Favorites();
+
+        trigger(qs('.thumbnail img'), 'click');
+
+        expect(isFav(qs('.thumbnail'))).to.be.false
+        expect(qs('.fav-icon')).to.be.null
       });
     });
   });

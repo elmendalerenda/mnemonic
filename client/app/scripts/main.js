@@ -92,10 +92,8 @@ var PageEvents = function($) {
     [].slice.call(qsa('.thumbnail')).forEach(function(th){
       $on(th, 'click', function(el){
 
-        if([].slice.call(el.target.parentNode.classList).includes('selected-wrapper')) {
-          // favorites.remove(qs('#numbers-input').value);
-          // el.target.parentNode.classList.remove('selected-wrapper');
-          // el.target.parentNode.removeChild(qs('.fav-icon',th));
+        if(el.target.parentNode.classList.contains('selected-wrapper')) {
+          favorites.remove(qs('#numbers-input').value);
         }
         else {
           var url = el.target.src;
