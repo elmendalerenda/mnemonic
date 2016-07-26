@@ -98,13 +98,6 @@ var PageEvents = function($) {
           // el.target.parentNode.removeChild(qs('.fav-icon',th));
         }
         else {
-          // [].slice.call(qsa('.thumbnail')).forEach(function(th){
-          //   th.classList.remove('selected-wrapper');
-          //   var icon = qs('.fav-icon',th);
-          //   if(icon)
-          //   th.removeChild(icon);
-          // });
-
           var url = el.target.src;
           favorites.save(qs('#numbers-input').value, qs('#result-word small').innerHTML, url);
         }

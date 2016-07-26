@@ -222,6 +222,19 @@
         expect($('.thumbnail span')[0].classList.contains('glyphicon')).to.be.true
         expect($('.thumbnail span')[0].classList.contains('glyphicon-heart')).to.be.true
       });
+
+      it('cleans the rest of images', function(){
+        $("<div class='thumbnail old selected-wrapper'><img/><span class='fav-icon'></span></div>").appendTo(container);
+        $("<div class='thumbnail new'><img /></div>").appendTo(container);
+        Favorites();
+
+        trigger(qs('.thumbnail.new img'), 'click');
+
+        var oldFavorite = qs('.old');
+
+        expect(oldFavorite.classList.contains('selected-wrapper')).to.be.false
+        expect(qs('.old .fav-icon')).to.be.null
+      });
     });
   });
 })();
