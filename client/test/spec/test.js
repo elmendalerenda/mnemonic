@@ -5,6 +5,10 @@
   var expect = chai.expect;
   var should = chai.should();
 
+  beforeEach(function() {
+    window.localStorage.clear();
+  });
+
   describe('Given a stream with words', function () {
     it('discard words without exactly 2 consonants', function () {
       var sourceList = "*dejo#\n*delga#\n*delia#"
@@ -168,9 +172,9 @@
       storage = {
         'setItem': function(){},
         'removeItem': function(){},
-        'getItem': function(){ return 'anyresult';}
+        'getItem': function(){ return JSON.stringify({ 'key' : 'anyresult'});}
       };
-      favorites = new Favorites(storage);
+      favorites = new FavoritesStorage(storage);
     });
 
     it('saves a match and image', function() {
@@ -178,17 +182,16 @@
 
       favorites.save('32', 'man', 'http://wadus.com');
 
-      expect(spy.withArgs('32', { "match": "man", "image": "http://wadus.com"}).calledOnce).to.be.true;
+      expect(spy.withArgs('32', JSON.stringify({ "match": "man", "image": "http://wadus.com"})).calledOnce).to.be.true;
     });
 
     it('gets the information from number', function() {
       var spy = sinon.spy(storage, 'getItem');
-      spy.returnValue = 'anyresult';
 
       var result = favorites.lookup('32');
 
       expect(spy.withArgs('32').calledOnce).to.be.true;
-      expect(result).to.be.equal('anyresult');
+      expect(result['key']).to.be.equal('anyresult');
     });
 
     it('removes a number from the favorites', function() {
@@ -197,6 +200,28 @@
       favorites.remove('32');
 
       expect(spy.withArgs('32').calledOnce).to.be.true;
+    });
+  });
+
+  describe('Favorites', function(){
+    var container = function() { return $('#test-container'); }();
+    var trigger = function(el, eventName) { el.dispatchEvent(new Event(eventName)); }
+    beforeEach(function() {
+      container.html('');
+    });
+
+    describe('select favorite', function(){
+      it('highlights img', function(){
+        $("<div class='thumbnail'><img /></div>").appendTo(container);
+        Favorites();
+
+        trigger(qs('.thumbnail img'), 'click');
+
+        expect($('.thumbnail')[0].classList.contains('selected-wrapper')).to.be.true
+        expect($('.thumbnail span')[0].classList.contains('fav-icon')).to.be.true
+        expect($('.thumbnail span')[0].classList.contains('glyphicon')).to.be.true
+        expect($('.thumbnail span')[0].classList.contains('glyphicon-heart')).to.be.true
+      });
     });
   });
 })();

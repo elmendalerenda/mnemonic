@@ -1,23 +1,18 @@
 'use strict';
-var Favorites = function (customStorage) {
+var Favorites = function () {
 
-  var storage = customStorage || window.localStorage;
+  function highlightImg(img){
+    var imgParent = img.parentNode;
+    imgParent.classList.add('selected-wrapper');
+    var icon = document.createElement('span');
+    icon.className = 'fav-icon glyphicon glyphicon-heart';
+    imgParent.appendChild(icon);
+  };
 
-  function composeData(matchedWord, image) {
-    return { "match": matchedWord, "image": image };
-  }
-
-  return {
-    save: function(key, matchedWord, image) {
-      storage.setItem(key, composeData(matchedWord, image));
-    },
-
-    lookup: function(key) {
-      return storage.getItem(key);
-    },
-
-    remove: function(key) {
-      storage.removeItem(key);
-    }
-  }
+  [].slice.call(qsa('.thumbnail img')).forEach(function(th){
+    $on(th, 'click', function(ev){
+      var img = ev.target;
+      highlightImg(img);
+    });
+  })
 }
