@@ -21,7 +21,7 @@ var PageEvents = function($) {
       thumb.className = 'thumbnail';
 
       var img = document.createElement('img');
-      img.className = 'img-responsive';
+      img.className = 'img-responsive result';
       img.src = imageUrl;
 
       item.appendChild(thumb);
@@ -30,8 +30,7 @@ var PageEvents = function($) {
     });
 
     resetLayout();
-    instrumentFavorites();
-    Favorites();
+    Favorites(favoritesStorage, '#numbers-input', '#result-word');
   }
 
   function clearGrid() {
@@ -57,7 +56,7 @@ var PageEvents = function($) {
   }
 
   function displayResultWord(word) {
-    var label = qs('#result-word small');
+    var label = qs('#result-word');
     if(!label) return;
     label.innerHTML = word;
   }
@@ -86,23 +85,7 @@ var PageEvents = function($) {
   $on(qs('#numbers-input'), 'blur', search);
   $on(qs('#search-button'), 'click', search);
 
-  var favorites = new FavoritesStorage();
-
-  function instrumentFavorites() {
-    [].slice.call(qsa('.thumbnail')).forEach(function(th){
-      $on(th, 'click', function(el){
-
-        if(el.target.parentNode.classList.contains('selected-wrapper')) {
-          favorites.remove(qs('#numbers-input').value);
-        }
-        else {
-          var url = el.target.src;
-          favorites.save(qs('#numbers-input').value, qs('#result-word small').innerHTML, url);
-        }
-      })
-    });
-  }
-
+  var favoritesStorage = new FavoritesStorage();
   Recorder('#record-button', '#stop-button');
 };
 

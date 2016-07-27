@@ -133,12 +133,12 @@
     });
 
     it('displays the resulting word', function() {
-      $("<div id='result-word'><small></small></div>").appendTo(container);
+      $("<div id='result-word'></div>").appendTo(container);
       attachPageEvents();
 
       search('32');
 
-      expect($('#result-word small').html()).to.be.equal('man');
+      expect($('#result-word').html()).to.be.equal('man');
     });
 
     it('displays the spinner when waiting for server response', function() {
@@ -213,10 +213,10 @@
 
     describe('select favorite', function(){
       it('highlights img', function(){
-        $("<div class='thumbnail'><img /></div>").appendTo(container);
+        $("<div class='thumbnail'><img class='result' /></div>").appendTo(container);
         Favorites();
 
-        trigger(qs('.thumbnail img'), 'click');
+        trigger(qs('img.result'), 'click');
 
         expect(isFav(qs('.thumbnail'))).to.be.true
         var iconClasses = qs('.thumbnail span').classList;
@@ -226,8 +226,8 @@
       });
 
       it('cleans the previous selected fav', function(){
-        $("<div class='thumbnail old selected-wrapper'><img/><span class='fav-icon'></span></div>").appendTo(container);
-        $("<div class='thumbnail new'><img /></div>").appendTo(container);
+        $("<div class='thumbnail old selected-wrapper'><img class='result'/><span class='fav-icon'></span></div>").appendTo(container);
+        $("<div class='thumbnail new'><img class='result'/></div>").appendTo(container);
         Favorites();
 
         trigger(qs('.thumbnail.new img'), 'click');
@@ -235,17 +235,54 @@
         expect(isFav(qs('.old'))).to.be.false
         expect(qs('.old .fav-icon')).to.be.null
       });
+
+      it('saves in storage as fav', function(){
+        $("<div ><img class='result' /></div>").appendTo(container);
+        $("<div id='result-word'>hola</div>").appendTo(container);
+        $("<input id='numbers-input' value='42'></input>").appendTo(container);
+        var storage = {
+          'save': function(){}
+        }
+        var spy = sinon.spy(storage, 'save');
+
+        Favorites(storage, '#numbers-input', '#result-word');
+
+        qs('img.result').src = 'http://thesrc';
+        trigger(qs('img.result'), 'click');
+
+        expect(spy.withArgs('42', 'hola', 'http://thesrc/').calledOnce).to.be.true;
+      });
     });
 
     describe('deselect favorite', function(){
+
+      var appendFav = function() {
+        $("<div class='thumbnail selected-wrapper'><img class='result'/><span class='fav-icon'></span></div>").appendTo(container);
+      }
+
       it('removes the highlight', function(){
-        $("<div class='thumbnail selected-wrapper'><img/><span class='fav-icon'></span></div>").appendTo(container);
+        appendFav();
         Favorites();
 
-        trigger(qs('.thumbnail img'), 'click');
+        trigger(qs('img.result'), 'click');
 
         expect(isFav(qs('.thumbnail'))).to.be.false
         expect(qs('.fav-icon')).to.be.null
+      });
+
+      it('removes from storage as fav', function(){
+        appendFav();
+        $("<input id='numbers-input' value='42'></input>").appendTo(container);
+        var storage = {
+          'remove': function(){}
+        }
+        var spy = sinon.spy(storage, 'remove');
+
+        Favorites(storage, '#numbers-input');
+
+        trigger(qs('img.result'), 'click');
+
+        expect(spy.withArgs('42').calledOnce).to.be.true;
       });
     });
   });
