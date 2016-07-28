@@ -8,7 +8,12 @@ class API < Roda
       r.get do
         { images: ImageServiceFactory.get_service.retrieve(r['q']) }
       end
+    end
 
+    r.is "recognize" do
+      r.post do
+        { text: Speech.recognize }
+      end
     end
   end
 end
