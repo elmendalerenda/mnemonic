@@ -1,6 +1,9 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    httparty (0.14.0)
+      multi_xml (>= 0.5.2)
+    multi_xml (0.5.5)
     rack (1.6.4)
     roda (2.16.0)
       rack
@@ -10,8 +13,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  httparty
   roda
   searchbing
+
+RUBY VERSION
+   ruby 2.2.3p173
 
 BUNDLED WITH
    1.12.5
