@@ -1,18 +1,22 @@
 require 'minitest/autorun'
 require './lib/speech/authentication'
+require './lib/speech/service'
 
 module HTTParty
-  Response = Struct.new(:body)
+  MockResponse = Struct.new(:body)
   class << self
     attr_reader :last_params
     def post(*params)
       @last_params = params
-      Response.new({'access_token' => 'my_token'})
+      MockResponse.new({'access_token' => 'my_token'})
     end
   end
 end
 
+
 class RecognizerTest < Minitest::Test
+  MockResponse = Struct.new(:body)
+
   def test_obtain_token
     token = Speech::Authentication.token
 
@@ -26,5 +30,33 @@ class RecognizerTest < Minitest::Test
     assert_equal HTTParty.last_params[1][:headers], {"Content-Type" => "application/x-www-form-urlencoded" }
     assert_equal HTTParty.last_params[1][:body],  "grant_type=client_credentials&client_id=any_client_id&client_secret=any_client_secret&scope=https%3A%2F%2Fspeech.platform.bing.com"
   end
-end
 
+  def test_recognize_returns_the_recognized_string
+    service = Speech::Service.new
+
+    HTTParty.stub :post, recognize_service_response do
+      assert_equal 'hey hello', service.recognize('', '')
+    end
+  end
+
+  def test_recognize_calls_ms_service
+    service = Speech::Service.new
+    httpMock = Minitest::Mock.new
+    service.httpLib = httpMock
+    httpMock.expect :post, recognize_service_response,
+    ["https://speech.platform.bing.com/recognize?version=3.0&requestid=random&appID=random&instanceid=random&format=json&locale=es-ES&device.os=linux&scenarios=ulm",
+    {headers: {"Authorization" => "Bearer tokenwadus",
+               "Content-Type" => "audio/wav; codec=audio/pcm; samplerate=16000; sourcerate=8000; trustsourcerate=false" },
+     body: 'mybinarycontent' }]
+
+    SecureRandom.stub :uuid, 'random' do
+      service.recognize('mybinarycontent', 'tokenwadus')
+    end
+
+    httpMock.verify
+  end
+
+  def recognize_service_response
+    MockResponse.new({'results' => [{'lexical' => 'hey hello'}]})
+  end
+end

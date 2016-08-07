@@ -2,6 +2,7 @@ require 'httparty'
 
 module Speech
   class Authentication
+    # Implementation of https://www.microsoft.com/cognitive-services/en-us/speech-api/documentation/API-Reference-REST/BingVoiceRecognition#authenticate-the-api-call
     def self.token(opts={})
       response = HTTParty.post(
         "https://oxford-speech.cloudapp.net/token/issueToken",
