@@ -8,7 +8,7 @@ module HTTParty
     attr_reader :last_params
     def post(*params)
       @last_params = params
-      MockResponse.new({'access_token' => 'my_token'})
+      MockResponse.new({'access_token' => 'my_token'}.to_json)
     end
   end
 end
@@ -18,9 +18,9 @@ class RecognizerTest < Minitest::Test
   MockResponse = Struct.new(:body)
 
   def test_obtain_token
-    token = Speech::Authentication.token
-
-    assert_equal 'my_token', token
+    HTTParty.stub :post, authentication_response do
+      assert_equal 'my_token', Speech::Authentication.token
+    end
   end
 
   def test_authentication_calls_ms_service
@@ -57,6 +57,10 @@ class RecognizerTest < Minitest::Test
   end
 
   def recognize_service_response
-    MockResponse.new({'results' => [{'lexical' => 'hey hello'}]})
+    MockResponse.new({'results' => [{'lexical' => 'hey hello'}]}.to_json)
+  end
+
+  def authentication_response
+    MockResponse.new({'access_token' => 'my_token'}.to_json)
   end
 end

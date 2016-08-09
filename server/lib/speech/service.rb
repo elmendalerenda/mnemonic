@@ -6,6 +6,10 @@ module Speech
 
     attr_writer :httpLib
 
+    def self.recognize(content, token)
+      new.recognize(content, token)
+    end
+
     def post(url, opts)
       klass = @httpLib || HTTParty
       klass.post(url, opts)
@@ -21,10 +25,10 @@ module Speech
 
         opts = { headers: {"Authorization" => "Bearer #{token}",
                           "Content-Type" => "audio/wav; codec=audio/pcm; samplerate=16000; sourcerate=8000; trustsourcerate=false" },
-                body: content }
+                          body: content.to_s }
 
       response = post(url, opts)
-      response.body['results'].first['lexical']
+      JSON.parse(response.body)['results'].first['lexical']
     end
   end
 end
