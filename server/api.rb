@@ -1,5 +1,7 @@
 require 'roda'
 require 'searchbing'
+require './lib/speech/authorization'
+require './lib/speech/service'
 
 class API < Roda
   plugin :json
@@ -12,7 +14,14 @@ class API < Roda
 
     r.is "recognize" do
       r.post do
-        { text: Speech.recognize }
+        begin
+          credentials = Speech::Authorization.credentials(client_id: ENV['client_id'], client_secret: ENV['client_secret'])
+          text = Speech::Service.recognize(request.body.read.to_s, credentials)
+          { text: text }
+        rescue Speech::InvalidCredentials
+          response.status = 500
+          { message: "invalid credentials" }
+        end
       end
     end
   end
