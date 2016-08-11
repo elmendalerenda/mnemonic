@@ -3,6 +3,7 @@ require 'searchbing'
 require './lib/speech/authorization'
 require './lib/speech/service'
 require './lib/image'
+require './lib/word2num'
 
 class API < Roda
   plugin :json
@@ -18,7 +19,8 @@ class API < Roda
         begin
           credentials = Speech::Authorization.credentials(client_id: ENV['client_id'], client_secret: ENV['client_secret'])
           text = Speech::Service.recognize(request.body.read.to_s, credentials)
-          { text: text }
+          num = Word2Num.translate(text)
+          { text: text, number: num }
         rescue Speech::InvalidCredentials
           response.status = 500
           { message: "invalid credentials" }
