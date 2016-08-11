@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require './api'
+require './lib/image'
 
 class ImageTest < Minitest::Test
   def test_factory
