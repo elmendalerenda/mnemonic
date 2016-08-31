@@ -8,24 +8,18 @@ class RecognizerTest < Minitest::Test
 
   def test_obtain_token
     authorization = Speech::Authorization.new
-    authorization.http_lib = stub(post: authentication_response)
+    authorization.ms_service = stub(authenticate: {'access_token' => 'my_token'}.to_json)
 
-    assert_equal 'my_token', authorization.credentials({client_id: '', client_secret: ''}).token
+    assert_equal 'my_token', authorization.credentials({client_id: 'invalid', client_secret: 'invalid'}).token
   end
 
-  def test_authentication_calls_ms_service
+  def test_authentication_fails
     authorization = Speech::Authorization.new
-    http_mock = Minitest::Mock.new
-    authorization.http_lib = http_mock
+    ms_service = Minitest::Mock.new
+    authorization.ms_service = stub(authenticate: { }.to_json)
 
-    http_mock.expect :post, authentication_response,
-      [ "https://oxford-speech.cloudapp.net/token/issueToken",
-        { headers: {"Content-Type" => "application/x-www-form-urlencoded" },
-          body: "grant_type=client_credentials&client_id=any_client_id&client_secret=any_client_secret&scope=https%3A%2F%2Fspeech.platform.bing.com"
-    }]
-    authorization.credentials(client_id: 'any_client_id', client_secret: 'any_client_secret')
-
-    http_mock.verify
+    credentials = authorization.credentials({client_id: 'invalid', client_secret: 'invalid'})
+    assert !credentials.valid?
   end
 
   def test_recognize_returns_the_recognized_string
@@ -63,7 +57,4 @@ class RecognizerTest < Minitest::Test
     MockResponse.new({'results' => [{'lexical' => 'hey hello'}]}.to_json)
   end
 
-  def authentication_response
-    MockResponse.new({'access_token' => 'my_token'}.to_json)
-  end
 end
