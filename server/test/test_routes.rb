@@ -12,6 +12,14 @@ class RouteTest < Minitest::Test
   def test_recognize_returns_json_with_text
     post '/recognize'
 
-    assert JSON.parse(last_response.body)['message'], 'invalid credentials'
+    assert_equal JSON.parse(last_response.body)['message'], 'invalid credentials'
+  end
+
+  def test_recognize_integration
+    skip
+    post '/recognize', Rack::Test::UploadedFile.new("./test/fixture/88.wav", "audio/wav")
+
+    assert_equal JSON.parse(last_response.body)['text'], 'ochenta y ocho'
+    assert_equal JSON.parse(last_response.body)['number'], 88
   end
 end
