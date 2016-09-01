@@ -10,17 +10,22 @@ module Speech
     end
 
     def credentials(opts={})
-      return NullCredentials.new if opts[:client_id].nil? || opts[:client_secret].nil?
+      return NullCredentials.new unless valid_params(opts)
 
       response = remote_service.authenticate(client_id: opts[:client_id], client_secret: opts[:client_secret])
 
-      #map?
-
-      tok = JSON.parse(response)['access_token']
-      Credentials.new(tok)
+      Credentials.new(extract_token(response))
     end
 
     private
+
+    def extract_token(json)
+      JSON.parse(json)['access_token']
+    end
+
+    def valid_params(params)
+      !params[:client_id].nil? && !params[:client_secret].nil?
+    end
 
     def remote_service
       @ms_service || MSService
