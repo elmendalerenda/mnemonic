@@ -1,3 +1,5 @@
+require './lib/speech/ms_service'
+
 module Speech
   class InvalidCredentials < StandardError; end
   class Service
@@ -10,7 +12,7 @@ module Speech
     def recognize(content, credentials)
       raise InvalidCredentials unless credentials.valid?
 
-      response = @ms_service.recognize(content, credentials.token)
+      response = remote_service.recognize(content: content, token: credentials.token)
 
       parse_result(response)
     end

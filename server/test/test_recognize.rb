@@ -35,6 +35,19 @@ class RecognizerTest < Minitest::Test
     }
   end
 
+  def test_integration
+    skip
+    client_id = ENV['client_id']
+    client_secret = ENV['client_secret']
+    content = File.binread('./test/fixture/88.wav')
+
+    credentials = Speech::Authorization.credentials({client_id: client_id, client_secret: client_secret})
+
+    response = Speech::Service.recognize(content, credentials)
+
+    assert_equal "ochenta y ocho", response
+  end
+
   def recognize_service_response
     {'results' => [{'lexical' => 'hey hello'}]}.to_json
   end
