@@ -1,36 +1,28 @@
-require 'httparty'
-require 'securerandom'
-
 module Speech
   class InvalidCredentials < StandardError; end
   class Service
-    attr_writer :http_lib
+    attr_writer :ms_service
 
     def self.recognize(content, credentials)
       new.recognize(content, credentials)
     end
 
-    def post(url, opts)
-      klass = @http_lib || HTTParty
-      klass.post(url, opts)
-    end
-
-    # Implementation of https://www.microsoft.com/cognitive-services/en-us/speech-api/documentation/API-Reference-REST/BingVoiceRecognition#access-the-speech-service-endpoint
     def recognize(content, credentials)
       raise InvalidCredentials unless credentials.valid?
 
-      url = 'https://speech.platform.bing.com/recognize?version=3.0' +
-        "&requestid=#{SecureRandom.uuid}" +
-        "&appID=#{SecureRandom.uuid}" +
-        "&instanceid=#{SecureRandom.uuid}" +
-        '&format=json&locale=es-ES&device.os=linux&scenarios=ulm'
+      response = @ms_service.recognize(content, credentials.token)
 
-        opts = { headers: {"Authorization" => "Bearer #{credentials.token}",
-                          "Content-Type" => "audio/wav; codec=audio/pcm; samplerate=16000; sourcerate=8000; trustsourcerate=false" },
-                          body: content.to_s }
+      parse_result(response)
+    end
 
-      response = post(url, opts)
-      JSON.parse(response.body)['results'].first['lexical']
+    private
+
+    def parse_result(json)
+      JSON.parse(json)['results'].first['lexical']
+    end
+
+    def remote_service
+      @ms_service || MSService
     end
   end
 end

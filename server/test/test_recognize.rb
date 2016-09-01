@@ -24,26 +24,9 @@ class RecognizerTest < Minitest::Test
 
   def test_recognize_returns_the_recognized_string
     service = Speech::Service.new
-    service.http_lib = stub(post: recognize_service_response)
+    service.ms_service = stub(recognize: recognize_service_response)
 
     assert_equal 'hey hello', service.recognize('', Speech::Credentials.new('valid'))
-  end
-
-  def test_recognize_calls_ms_service
-    service = Speech::Service.new
-    httpMock = Minitest::Mock.new
-    service.http_lib = httpMock
-    httpMock.expect :post, recognize_service_response,
-      ["https://speech.platform.bing.com/recognize?version=3.0&requestid=random&appID=random&instanceid=random&format=json&locale=es-ES&device.os=linux&scenarios=ulm",
-       {headers: {"Authorization" => "Bearer tokenwadus",
-                  "Content-Type" => "audio/wav; codec=audio/pcm; samplerate=16000; sourcerate=8000; trustsourcerate=false" },
-                  body: 'mybinarycontent' }]
-
-    SecureRandom.stub :uuid, 'random' do
-      service.recognize('mybinarycontent', Speech::Credentials.new('tokenwadus'))
-    end
-
-    httpMock.verify
   end
 
   def test_recognize_raises_when_invalid_credentials
@@ -52,9 +35,7 @@ class RecognizerTest < Minitest::Test
     }
   end
 
-  MockResponse = Struct.new(:body)
   def recognize_service_response
-    MockResponse.new({'results' => [{'lexical' => 'hey hello'}]}.to_json)
+    {'results' => [{'lexical' => 'hey hello'}]}.to_json
   end
-
 end
