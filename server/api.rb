@@ -17,7 +17,7 @@ class API < Roda
     r.is "recognize" do
       r.post do
         begin
-          credentials = Speech::Authorization.credentials(client_id: ENV['client_id'], client_secret: ENV['client_secret'])
+          credentials = Speech::Authorization.credentials(subscription_key: ENV['subscription_key'])
           text = Speech::Service.recognize(request.body.read.to_s, credentials)
           num = Word2Num.translate(text)
           { text: text, number: num }

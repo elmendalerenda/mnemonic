@@ -8,9 +8,9 @@ class RecognizerTest < Minitest::Test
 
   def test_obtain_token
     authorization = Speech::Authorization.new
-    authorization.ms_service = stub(authenticate: {'access_token' => 'my_token'}.to_json)
+    authorization.ms_service = stub(authenticate: 'my_token')
 
-    assert_equal 'my_token', authorization.credentials({client_id: 'invalid', client_secret: 'invalid'}).token
+    assert_equal 'my_token', authorization.credentials({subscription_key: 'invalid'}).token
   end
 
   def test_authentication_fails
@@ -18,7 +18,7 @@ class RecognizerTest < Minitest::Test
     ms_service = Minitest::Mock.new
     authorization.ms_service = stub(authenticate: { }.to_json)
 
-    credentials = authorization.credentials({client_id: 'invalid', client_secret: 'invalid'})
+    credentials = authorization.credentials({subscription_key: 'invalid'})
     assert !credentials.valid?
   end
 
@@ -37,11 +37,10 @@ class RecognizerTest < Minitest::Test
 
   def test_integration
     skip
-    client_id = ENV['client_id']
-    client_secret = ENV['client_secret']
+    client_id = ENV['subscription_key']
     content = File.binread('./test/fixture/88.wav')
 
-    credentials = Speech::Authorization.credentials({client_id: client_id, client_secret: client_secret})
+    credentials = Speech::Authorization.credentials({subscription_key: client_id})
 
     response = Speech::Service.recognize(content, credentials)
 

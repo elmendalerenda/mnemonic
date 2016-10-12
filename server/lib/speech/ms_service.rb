@@ -5,13 +5,11 @@ module Speech
   class MSService
     class << self
       # https://www.microsoft.com/cognitive-services/en-us/speech-api/documentation/API-Reference-REST/BingVoiceRecognition#authenticate-the-api-call
-      def authenticate(client_id:, client_secret:)
+      def authenticate(subscription_key:)
         response = HTTParty.post(
-          "https://oxford-speech.cloudapp.net/token/issueToken",
-          {
-          headers: {"Content-Type" => "application/x-www-form-urlencoded" },
-          body: "grant_type=client_credentials&client_id=#{client_id}&client_secret=#{client_secret}&scope=https%3A%2F%2Fspeech.platform.bing.com"
-        })
+          "https://api.cognitive.microsoft.com/sts/v1.0/issueToken",
+          { headers: {"Ocp-Apim-Subscription-Key" => subscription_key } }
+        )
 
         response.body
       end

@@ -12,7 +12,7 @@ module Speech
     def credentials(opts={})
       return NullCredentials.new unless valid_params(opts)
 
-      response = remote_service.authenticate(client_id: opts[:client_id], client_secret: opts[:client_secret])
+      response = remote_service.authenticate(subscription_key: opts[:subscription_key])
 
       Credentials.new(extract_token(response))
     end
@@ -20,11 +20,14 @@ module Speech
     private
 
     def extract_token(json)
-      JSON.parse(json)['access_token']
+      JSON.parse(json)
+      nil
+    rescue JSON::ParserError
+      return json
     end
 
     def valid_params(params)
-      !params[:client_id].nil? && !params[:client_secret].nil?
+      !params[:subscription_key].nil?
     end
 
     def remote_service
