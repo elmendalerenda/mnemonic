@@ -8,17 +8,19 @@ GEM
     roda (2.16.0)
       rack
     searchbing (0.2.6)
+    voice_recognition_bing (0.1.0)
+      httparty (~> 0.14)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  httparty
   roda
   searchbing
+  voice_recognition_bing
 
 RUBY VERSION
    ruby 2.2.3p173
 
 BUNDLED WITH
-   1.12.5
+   1.13.1

@@ -1,7 +1,6 @@
 require 'roda'
 require 'searchbing'
-require './lib/speech/authorization'
-require './lib/speech/service'
+require 'voice_recognition_bing'
 require './lib/image'
 require './lib/word2num'
 
@@ -17,11 +16,11 @@ class API < Roda
     r.is "recognize" do
       r.post do
         begin
-          credentials = Speech::Authorization.credentials(subscription_key: ENV['subscription_key'])
-          text = Speech::Service.recognize(request.body.read.to_s, credentials)
+          credentials = VoiceRecognitionBing::Authorization.credentials
+          text = VoiceRecognitionBing::Service.recognize(request.body.read.to_s, credentials)
           num = Word2Num.translate(text)
           { text: text, number: num }
-        rescue Speech::InvalidCredentials
+        rescue VoiceRecognitionBing::InvalidCredentials
           response.status = 500
           { message: "invalid credentials" }
         end
