@@ -1,43 +1,62 @@
 'use strict';
 var Recorder = function (playSelector, stopSelector) {
 
-  function captureUserMedia(mediaConstraints, successCallback, errorCallback) {
-    navigator.mediaDevices.getUserMedia(mediaConstraints).then(successCallback).catch(errorCallback);
-  }
-
-  var mediaConstraints = {
-    audio: true
-  };
 
   var mediaRecorder;
 
-  if( document.querySelector(playSelector)) {
-    document.querySelector(playSelector).onclick = function() {
-      this.removeAttribute('disabled')
-      captureUserMedia(mediaConstraints, onMediaSuccess, onMediaError);
-    };
-  }
+  var play = document.querySelector(playSelector);
+  var stop = document.querySelector(stopSelector);
 
-  if( document.querySelector(stopSelector)) {
-    document.querySelector(stopSelector).onclick = function() {
-      this.addAttribute('disabled')
-      mediaRecorder.stop();
-      mediaRecorder.stream.stop();
-    };
-  }
+  var audioChunks = [];
+
 
   function onMediaSuccess(stream) {
-    mediaRecorder = new MediaStreamRecorder(stream);
-    mediaRecorder.mimeType = 'audio/wav'; // check this line for audio/wav
-    mediaRecorder.ondataavailable = function (blob) {
-        // POST/PUT "Blob" using FormData/XHR2
-        var blobURL = URL.createObjectURL(blob);
-        document.write('<a href="' + blobURL + '">' + blobURL + '</a>');
+    mediaRecorder = new MediaRecorder(stream);
+    if(play) {
+      play.onclick = function() {
+        stop.disabled = false;
+        play.disabled = true;
+        mediaRecorder.start(3000);
+      };
+    }
+
+    if(stop) {
+      stop.onclick = function() {
+        play.disabled = false
+        stop.disabled = true;
+        mediaRecorder.stop();
+      };
+    }
+
+    mediaRecorder.ondataavailable = function(blob) {
+      audioChunks.push(e.data);
+    }
+
+    mediaRecorder.onstop = function(e) {
+      console.log('STOP');
+
+      // POST/PUT "Blob" using FormData/XHR2
+      var fd = new FormData();
+      fd.append('fname', 'test.wav');
+      fd.append('data', new Blob(audioChunks));
+
+      $.ajax({
+        type: 'POST',
+        url: '/recognize',
+        data: fd,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+          console.log('VAMOSSSSS');
+          console.log(data);
+        }
+      });
     };
-    mediaRecorder.start(3000);
   }
 
   function onMediaError(e) {
     console.error('media error', e);
   }
+
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(onMediaSuccess).catch(onMediaError);
 }

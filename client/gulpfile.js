@@ -101,6 +101,8 @@ gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
   var proxy = require('proxy-middleware');
   var proxyOptions = url.parse('http://localhost:3000/search');
   proxyOptions.route = '/search';
+  var proxyOptions2 = url.parse('http://localhost:3000/recognize');
+  proxyOptions2.route = '/recognize';
   browserSync({
     notify: false,
     port: 9000,
@@ -110,7 +112,7 @@ gulp.task('serve', ['styles', 'scripts', 'fonts'], () => {
         '/bower_components': 'bower_components'
       }
     },
-    middleware: [ proxy(proxyOptions) ]
+    middleware: [ proxy(proxyOptions), proxy(proxyOptions2) ]
   });
 
   gulp.watch([
